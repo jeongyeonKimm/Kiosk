@@ -1,5 +1,6 @@
 package com.example.kiosk.api.service.product;
 
+import com.example.kiosk.api.service.product.response.ProductResponse;
 import com.example.kiosk.domain.product.Product;
 import com.example.kiosk.domain.product.ProductRepository;
 import com.example.kiosk.domain.product.ProductSellingStatus;
@@ -41,7 +42,7 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(List.of(product1, product2, product3));
 
         // when
-        List<Product> products = productService.getProducts();
+        List<ProductResponse> products = productService.getProducts();
 
         // then
         assertThat(products).hasSize(3);
@@ -54,7 +55,7 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(Collections.emptyList());
 
         // when
-        List<Product> products = productService.getProducts();
+        List<ProductResponse> products = productService.getProducts();
 
         // then
         assertThat(products).hasSize(0);
