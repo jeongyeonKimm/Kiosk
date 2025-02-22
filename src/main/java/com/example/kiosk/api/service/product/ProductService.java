@@ -3,6 +3,7 @@ package com.example.kiosk.api.service.product;
 import com.example.kiosk.api.service.product.response.ProductResponse;
 import com.example.kiosk.domain.product.Product;
 import com.example.kiosk.domain.product.ProductRepository;
+import com.example.kiosk.domain.product.ProductSellingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,14 @@ public class ProductService {
 
     public List<ProductResponse> getProducts() {
         List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> getSellingProducts() {
+        List<Product> products = productRepository.findAllBySellingStatusIn(ProductSellingStatus.forDisplay());
 
         return products.stream()
                 .map(ProductResponse::of)
