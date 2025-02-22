@@ -83,7 +83,7 @@ class ProductRepositoryTest {
                 .extracting("productNumber", "name", "price", "productType", "sellingStatus")
                 .containsExactlyInAnyOrder(
                         tuple("001", "아메리카노", 4000, HANDMADE, SELLING),
-                        tuple("002", "사과쥬스", 4500, HANDMADE, SELLING)
+                        tuple("002", "사과쥬스", 4500, BOTTLE, SOLD_OUT)
                 );
     }
 
