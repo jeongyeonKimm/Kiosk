@@ -4,7 +4,9 @@ import com.example.kiosk.domain.product.Product;
 import com.example.kiosk.domain.product.ProductSellingStatus;
 import com.example.kiosk.domain.product.ProductType;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class ProductResponse {
 
     private Long id;

@@ -6,20 +6,19 @@ import com.example.kiosk.domain.product.Product;
 import com.example.kiosk.domain.product.ProductSellingStatus;
 import com.example.kiosk.domain.product.ProductType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.antlr.v4.runtime.misc.IntegerStack;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.example.kiosk.domain.product.ProductSellingStatus.SELLING;
 import static com.example.kiosk.domain.product.ProductSellingStatus.SOLD_OUT;
@@ -59,22 +58,29 @@ class ProductControllerTest {
         Product product2 = createProduct("002", "카페라떼", 4500, HANDMADE, SELLING);
         Product product3 = createProduct("003", "소금빵", 3500, BAKERY, SOLD_OUT);
         List<Product> products = List.of(product1, product2, product3);
+        List<ProductResponse> productResponses = IntStream.range(0, 3)
+                .mapToObj(i -> ProductResponse.builder()
+                        .id((long) (i + 1))
+                        .productNumber(products.get(i).getProductNumber())
+                        .name(products.get(i).getName())
+                        .price(products.get(i).getPrice())
+                        .productType(products.get(i).getProductType())
+                        .sellingStatus(products.get(i).getSellingStatus())
+                        .build()
+                )
+                .toList();
 
-        given(productService.getProducts())
-                .willReturn(
-                    products.stream()
-                            .map(ProductResponse::of)
-                            .collect(Collectors.toList())
-                );
+        given(productService.getProducts()).willReturn(productResponses);
 
         // when, then
-        mockMvc.perform(get("/api/product"))
+        mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].productNumber").value("001"))
                 .andExpect(jsonPath("$[0].name").value("아메리카노"))
                 .andExpect(jsonPath("$[0].price").value("4000"))
-                .andExpect(jsonPath("$[0].productType").value("제조 음료"))
-                .andExpect(jsonPath("$[0].sellingStatus").value("판매중"))
+                .andExpect(jsonPath("$[0].productType").value(HANDMADE.toString()))
+                .andExpect(jsonPath("$[0].sellingStatus").value(SELLING.toString()))
                 .andDo(print());
     }
 
