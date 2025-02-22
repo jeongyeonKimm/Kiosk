@@ -4,11 +4,9 @@ import com.example.kiosk.domain.product.Product;
 import com.example.kiosk.domain.product.ProductRepository;
 import com.example.kiosk.domain.product.ProductSellingStatus;
 import com.example.kiosk.domain.product.ProductType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -51,7 +49,7 @@ class ProductServiceTest {
 
     @DisplayName("등록된 상품이 없으면 전체 상품을 조회했을 때 크기가 0이다.")
     @Test
-    void getProducts() {
+    void getProductsWhenProductsAreEmpty() {
         // given
         given(productRepository.findAll()).willReturn(Collections.emptyList());
 
