@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static com.example.kiosk.domain.product.ProductSellingStatus.*;
-import static com.example.kiosk.domain.product.ProductType.BEVERAGE;
+import static com.example.kiosk.domain.product.ProductType.HANDMADE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -24,8 +24,8 @@ class ProductRepositoryTest {
     @Test
     void getProducts() {
         // given
-        Product product1 = createProduct("001", "아메리카노", 4000, BEVERAGE, SELLING);
-        Product product2 = createProduct("002", "카페라떼", 4500, BEVERAGE, SELLING);
+        Product product1 = createProduct("001", "아메리카노", 4000, HANDMADE, SELLING);
+        Product product2 = createProduct("002", "카페라떼", 4500, HANDMADE, SELLING);
         Product product3 = createProduct("003", "소금빵", 3500, ProductType.BAKERY, SOLD_OUT);
 
         productRepository.saveAll(List.of(product1, product2, product3));
@@ -37,8 +37,8 @@ class ProductRepositoryTest {
         assertThat(products).hasSize(3)
                 .extracting("productNumber", "name", "price", "productType", "sellingStatus")
                 .containsExactlyInAnyOrder(
-                        tuple("001", "아메리카노", 4000, BEVERAGE, SELLING),
-                        tuple("002", "카페라떼", 4500, BEVERAGE, SELLING),
+                        tuple("001", "아메리카노", 4000, HANDMADE, SELLING),
+                        tuple("002", "카페라떼", 4500, HANDMADE, SELLING),
                         tuple("003", "소금빵", 3500, ProductType.BAKERY, SOLD_OUT)
                 );
     }
