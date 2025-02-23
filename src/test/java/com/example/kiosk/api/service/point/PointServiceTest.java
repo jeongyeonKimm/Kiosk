@@ -33,7 +33,7 @@ class PointServiceTest {
 
     @DisplayName("가지고 있던 포인트가 0인 사용자가 원하는 금액만큼 포인트를 충전한다.")
     @Test
-    void chargePoints() {
+    void chargePointsWithZeroPoint() {
         // given
         Long memberId = 1L;
         Long amount = 10000L;
@@ -49,6 +49,29 @@ class PointServiceTest {
 
         // then
         assertThat(member.getPoint().getAmount()).isEqualTo(10000L);
+
+        verify(memberRepository, times(1)).save(member);
+    }
+
+    @DisplayName("가지고 있던 포인트가 0인 사용자가 원하는 금액만큼 포인트를 충전한다.")
+    @Test
+    void chargePointsWithPoints() {
+        // given
+        Long memberId = 1L;
+        Long amount = 10000L;
+
+        Member member = Member.builder()
+                .name("정장꾸")
+                .build();
+        member.chargePoints(10000L);
+
+        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+
+        // when
+        pointService.chargePoints(memberId, amount);
+
+        // then
+        assertThat(member.getPoint().getAmount()).isEqualTo(20000L);
 
         verify(memberRepository, times(1)).save(member);
     }
