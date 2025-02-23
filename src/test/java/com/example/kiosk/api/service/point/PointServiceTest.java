@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.example.kiosk.exception.MemberErrorCode.INVALID_MEMBER;
 import static com.example.kiosk.exception.PointErrorCode.INVALID_CHARGE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -114,7 +115,7 @@ class PointServiceTest {
         // when
         assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
                 .isInstanceOf(RestApiException.class)
-                .hasMessage(MemberErrorCode.INVALID_MEMBER.getMessage());
+                .hasMessage(INVALID_MEMBER.getMessage());
 
         // then
         then(memberRepository).should(times(1)).findById(memberId);
