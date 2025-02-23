@@ -28,5 +28,20 @@ public class Member extends BaseEntity {
     @Builder
     private Member(String name) {
         this.name = name;
+        this.point = Point.builder()
+                .member(this)
+                .amount(0L)
+                .build();
+    }
+
+    public void chargePoints(Long amount) {
+        if (this.point == null) {
+            this.point = Point.builder()
+                    .member(this)
+                    .amount(0L)
+                    .build();
+        }
+
+        this.point.addPoints(amount);
     }
 }

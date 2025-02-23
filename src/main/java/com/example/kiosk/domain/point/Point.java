@@ -28,4 +28,12 @@ public class Point extends BaseEntity {
         this.member = member;
         this.amount = amount;
     }
+
+    public void addPoints(Long amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("충전할 포인트는 0보다 커야 합니다.");
+        }
+
+        this.amount += amount;
+    }
 }
