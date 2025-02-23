@@ -3,6 +3,7 @@ package com.example.kiosk.api.service.point;
 import com.example.kiosk.domain.member.Member;
 import com.example.kiosk.domain.member.MemberRepository;
 import com.example.kiosk.domain.point.PointRepository;
+import com.example.kiosk.exception.CommonErrorCode;
 import com.example.kiosk.exception.RestApiException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -95,6 +96,25 @@ class PointServiceTest {
         assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
                 .isInstanceOf(RestApiException.class)
                 .hasMessage(INVALID_CHARGE_POINT.getMessage());
+
+        // then
+        then(memberRepository).should(times(1)).findById(memberId);
+        then(memberRepository).should(never()).save(any(Member.class));
+    }
+
+    @DisplayName("존재하지 않는 사용자의 포인트를 충전하려는 경우 포인트를 충전에 실패한다.")
+    @Test
+    void chargePointsWithInvalidMember() {
+        // given
+        Long memberId = -1L;
+        Long amount = 10000L;
+
+        given(memberRepository.findById(memberId)).willReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage(MemberErrorCode.INVALID_MEMBER.getMessage());
 
         // then
         then(memberRepository).should(times(1)).findById(memberId);
