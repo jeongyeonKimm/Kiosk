@@ -3,7 +3,9 @@ package com.example.kiosk.api.service.point.response;
 import com.example.kiosk.domain.member.Member;
 import com.example.kiosk.domain.point.Point;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class PointResponse {
 
     private Long id;
