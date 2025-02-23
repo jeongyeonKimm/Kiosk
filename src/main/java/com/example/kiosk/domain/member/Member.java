@@ -1,5 +1,6 @@
 package com.example.kiosk.domain.member;
 
+import com.example.kiosk.domain.BaseEntity;
 import com.example.kiosk.domain.point.Point;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
