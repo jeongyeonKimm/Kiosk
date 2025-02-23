@@ -1,5 +1,7 @@
 package com.example.kiosk.domain.point;
 
+import com.example.kiosk.domain.member.Member;
+import com.example.kiosk.domain.member.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +17,21 @@ class PointRepositoryTest {
     @Autowired
     private PointRepository pointRepository;
 
-    @DisplayName("")
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @DisplayName("각 회원은 포인트를 가진다.")
     @Test
     void savePoint() {
         // given
         Member member = Member.builder()
                 .name("정장꾸")
                 .build();
+        memberRepository.save(member);
 
         Point point = Point.builder()
                 .member(member)
-                .amount(10000)
+                .amount(10000L)
                 .build();
 
         // when
