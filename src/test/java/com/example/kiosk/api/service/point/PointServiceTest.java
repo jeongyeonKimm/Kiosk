@@ -15,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PointServiceTest {
@@ -74,5 +76,28 @@ class PointServiceTest {
         assertThat(member.getPoint().getAmount()).isEqualTo(20000L);
 
         verify(memberRepository, times(1)).save(member);
+    }
+
+    @DisplayName("충전하려는 포인트가 0이하이면 포인트를 충전에 실패한다.")
+    @Test
+    void chargeUnderZeroPoints() {
+        // given
+        Long memberId = 1L;
+        Long amount = 0L;
+
+        Member member = Member.builder()
+                .name("정장꾸")
+                .build();
+
+        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+
+        // when
+        assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage(PointErrorCode.INVALID_CHARGE_POINT.getMessage());
+
+        // then
+        then(memberRepository).should(times(1)).findById(999L);
+        then(memberRepository).should(never()).save(any(Member.class));
     }
 }
