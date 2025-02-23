@@ -32,9 +32,6 @@ class PointServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-    @Mock
-    private PointRepository pointRepository;
-
     @DisplayName("가지고 있던 포인트가 0인 사용자가 원하는 금액만큼 포인트를 충전한다.")
     @Test
     void chargePointsWithZeroPoint() {
