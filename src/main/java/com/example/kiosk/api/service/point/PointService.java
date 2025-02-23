@@ -1,5 +1,6 @@
 package com.example.kiosk.api.service.point;
 
+import com.example.kiosk.api.service.point.request.PointChargeServiceRequest;
 import com.example.kiosk.domain.member.Member;
 import com.example.kiosk.domain.member.MemberRepository;
 import com.example.kiosk.exception.RestApiException;
@@ -17,11 +18,11 @@ public class PointService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void chargePoints(Long memberId, Long amount) {
-        Member member = memberRepository.findById(memberId)
+    public void chargePoints(PointChargeServiceRequest request) {
+        Member member = memberRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new RestApiException(INVALID_MEMBER));
 
-        member.chargePoints(amount);
+        member.chargePoints(request.getAmount());
         memberRepository.save(member);
     }
 }

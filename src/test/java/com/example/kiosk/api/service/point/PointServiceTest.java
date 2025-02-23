@@ -1,9 +1,8 @@
 package com.example.kiosk.api.service.point;
 
+import com.example.kiosk.api.service.point.request.PointChargeServiceRequest;
 import com.example.kiosk.domain.member.Member;
 import com.example.kiosk.domain.member.MemberRepository;
-import com.example.kiosk.domain.point.PointRepository;
-import com.example.kiosk.exception.CommonErrorCode;
 import com.example.kiosk.exception.RestApiException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,17 +35,16 @@ class PointServiceTest {
     @Test
     void chargePointsWithZeroPoint() {
         // given
-        Long memberId = 1L;
-        Long amount = 10000L;
+        PointChargeServiceRequest request = getRequest(10000L);
 
         Member member = Member.builder()
                 .name("정장꾸")
                 .build();
 
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(memberRepository.findById(request.getMemberId())).willReturn(Optional.of(member));
 
         // when
-        pointService.chargePoints(memberId, amount);
+        pointService.chargePoints(request);
 
         // then
         assertThat(member.getPoint().getAmount()).isEqualTo(10000L);
@@ -58,18 +56,17 @@ class PointServiceTest {
     @Test
     void chargePointsWithPoints() {
         // given
-        Long memberId = 1L;
-        Long amount = 10000L;
+        PointChargeServiceRequest request = getRequest(10000L);
 
         Member member = Member.builder()
                 .name("정장꾸")
                 .build();
         member.chargePoints(10000L);
 
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(memberRepository.findById(request.getMemberId())).willReturn(Optional.of(member));
 
         // when
-        pointService.chargePoints(memberId, amount);
+        pointService.chargePoints(request);
 
         // then
         assertThat(member.getPoint().getAmount()).isEqualTo(20000L);
@@ -81,22 +78,21 @@ class PointServiceTest {
     @Test
     void chargeUnderZeroPoints() {
         // given
-        Long memberId = 1L;
-        Long amount = 0L;
+        PointChargeServiceRequest request = getRequest(0L);
 
         Member member = Member.builder()
                 .name("정장꾸")
                 .build();
 
-        given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
+        given(memberRepository.findById(request.getMemberId())).willReturn(Optional.of(member));
 
         // when
-        assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
+        assertThatThrownBy(() -> pointService.chargePoints(request))
                 .isInstanceOf(RestApiException.class)
                 .hasMessage(INVALID_CHARGE_POINT.getMessage());
 
         // then
-        then(memberRepository).should(times(1)).findById(memberId);
+        then(memberRepository).should(times(1)).findById(request.getMemberId());
         then(memberRepository).should(never()).save(any(Member.class));
     }
 
@@ -104,18 +100,24 @@ class PointServiceTest {
     @Test
     void chargePointsWithInvalidMember() {
         // given
-        Long memberId = -1L;
-        Long amount = 10000L;
+        PointChargeServiceRequest request = getRequest(10000L);
 
-        given(memberRepository.findById(memberId)).willReturn(Optional.empty());
+        given(memberRepository.findById(request.getMemberId())).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
+        assertThatThrownBy(() -> pointService.chargePoints(request))
                 .isInstanceOf(RestApiException.class)
                 .hasMessage(INVALID_MEMBER.getMessage());
 
         // then
-        then(memberRepository).should(times(1)).findById(memberId);
+        then(memberRepository).should(times(1)).findById(request.getMemberId());
         then(memberRepository).should(never()).save(any(Member.class));
+    }
+
+    private static PointChargeServiceRequest getRequest(Long amount) {
+        return PointChargeServiceRequest.builder()
+                .memberId(1L)
+                .amount(amount)
+                .build();
     }
 }
