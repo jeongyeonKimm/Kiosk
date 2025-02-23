@@ -2,11 +2,14 @@ package com.example.kiosk.domain.point;
 
 import com.example.kiosk.domain.BaseEntity;
 import com.example.kiosk.domain.member.Member;
+import com.example.kiosk.exception.RestApiException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.example.kiosk.exception.PointErrorCode.INVALID_CHARGE_POINT;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,7 +34,7 @@ public class Point extends BaseEntity {
 
     public void addPoints(Long amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("충전할 포인트는 0보다 커야 합니다.");
+            throw new RestApiException(INVALID_CHARGE_POINT);
         }
 
         this.amount += amount;

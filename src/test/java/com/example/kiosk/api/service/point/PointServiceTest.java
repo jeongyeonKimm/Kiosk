@@ -2,9 +2,8 @@ package com.example.kiosk.api.service.point;
 
 import com.example.kiosk.domain.member.Member;
 import com.example.kiosk.domain.member.MemberRepository;
-import com.example.kiosk.domain.point.Point;
 import com.example.kiosk.domain.point.PointRepository;
-import org.assertj.core.api.Assertions;
+import com.example.kiosk.exception.RestApiException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.example.kiosk.exception.PointErrorCode.INVALID_CHARGE_POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -94,10 +94,10 @@ class PointServiceTest {
         // when
         assertThatThrownBy(() -> pointService.chargePoints(memberId, amount))
                 .isInstanceOf(RestApiException.class)
-                .hasMessage(PointErrorCode.INVALID_CHARGE_POINT.getMessage());
+                .hasMessage(INVALID_CHARGE_POINT.getMessage());
 
         // then
-        then(memberRepository).should(times(1)).findById(999L);
+        then(memberRepository).should(times(1)).findById(memberId);
         then(memberRepository).should(never()).save(any(Member.class));
     }
 }
